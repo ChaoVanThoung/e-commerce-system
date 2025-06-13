@@ -18,8 +18,8 @@ public class CartItemRepositoryImpl implements Repository<CartItems, Integer> {
                     VALUES (?, ?, ?)
                     """;
             PreparedStatement ps = con.prepareStatement(sql);
-            ps.setInt(1,cartItems.getCart_id());
-            ps.setInt(2,cartItems.getProduct_id());
+            ps.setInt(1,cartItems.getCartId());
+            ps.setInt(2,cartItems.getProductId());
             ps.setInt(3,cartItems.getQuantity());
             int rowAffected = ps.executeUpdate();
             if(rowAffected > 0){

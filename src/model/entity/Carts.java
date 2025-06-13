@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Carts {
     Integer id;
-    Integer user_id;
-    Boolean is_active;
+    Integer userId;
+    Boolean isActive;
     List<CartItems> items;
 }

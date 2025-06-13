@@ -11,10 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class User {
     Integer id;
-    String user_name;
+    String username;
     String email;
     String password;
-    Boolean is_deleted;
-    String u_uuid;
-    Boolean id_login;
+    Boolean isDeleted;
+    String userUuid;
 }

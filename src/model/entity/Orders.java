@@ -13,8 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 public class Orders {
     Integer id;
-    Integer user_id;
-    Integer order_code;
-    Double total_price;
+    Integer userId;
+    Integer orderCode;
+    Double totalPrice;
     List<OrderItems> items;
 }

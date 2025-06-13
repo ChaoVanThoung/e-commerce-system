@@ -11,18 +11,18 @@ public class UserMapper {
     public static User fromcreateNewUserDtoToUser(UserRequestDto userRequestDto) {
         return User.builder()
                 .id(new Random().nextInt(999999))
-                .u_uuid(UUID.randomUUID().toString())
-                .user_name(userRequestDto.user_name())
+                .userUuid(UUID.randomUUID().toString())
+                .username(userRequestDto.user_name())
                 .email(userRequestDto.email())
                 .password(userRequestDto.password())
-                .is_deleted(false)
+                .isDeleted(false)
                 .build();
     }
 
     public static UserResponseDto UserResponseDto(User user) {
         return UserResponseDto.builder()
                 .id(user.getId())
-                .user_name(user.getUser_name())
+                .user_name(user.getUsername())
                 .email(user.getEmail())
                 .build();
     }

@@ -43,8 +43,8 @@ public class CardServiceImpl implements CardService {
         }
 
         CartItems cartItems = CartItemMapper.CartItemMapper(cartItemRequestDto);
-        cartItems.setCart_id(activeCarts.getId()); // set correct cart_id from active cart
-        cartItems.setProduct_id(product.getId()); // set correct product_id from product
+        cartItems.setCartId(activeCarts.getId()); // set correct cart_id from active cart
+        cartItems.setProductId(product.getId()); // set correct product_id from product
 
         CartItems saveCartItem = cartItemRepository.save(cartItems);
         if (saveCartItem == null) {

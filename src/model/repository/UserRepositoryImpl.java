@@ -18,11 +18,11 @@ public class UserRepositoryImpl implements Repository<User,Integer>{
                     VALUES(?,?,?,?,?)
                     """;
             PreparedStatement pre = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            pre.setString(1, user.getUser_name());
+            pre.setString(1, user.getUsername());
             pre.setString(2, user.getEmail());
             pre.setString(3, user.getPassword());
-            pre.setBoolean(4, user.getIs_deleted());
-            pre.setString(5, user.getU_uuid());
+            pre.setBoolean(4, user.getIsDeleted());
+            pre.setString(5, user.getUserUuid());
             int rowAffected = pre.executeUpdate();
             if(rowAffected > 0){
                 System.out.println("User has been saved successfully");
@@ -59,11 +59,11 @@ public class UserRepositoryImpl implements Repository<User,Integer>{
             ResultSet resultSet = pre.executeQuery();
             User user = new User();
             if(resultSet.next()){
-                user.setUser_name(resultSet.getString("user_name"));
+                user.setUsername(resultSet.getString("user_name"));
                 user.setEmail(resultSet.getString("email"));
                 user.setPassword(resultSet.getString("password"));
-                user.setIs_deleted(resultSet.getBoolean("is_deleted"));
-                user.setU_uuid(resultSet.getString("u_uuid"));
+                user.setIsDeleted(resultSet.getBoolean("is_deleted"));
+                user.setUserUuid(resultSet.getString("u_uuid"));
             }
             return user;
         }catch (Exception e){

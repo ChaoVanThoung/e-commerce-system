@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OrderItems {
     Integer id;
-    Integer order_id;
-    String p_uuid;
+    Integer orderId;
+    String pUuid;
     Integer quantity;
-    Integer price_at_order;
+    Integer priceAtOrder;
 }

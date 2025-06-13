@@ -15,8 +15,8 @@ public class CartRepository implements Repository<Carts,Integer> {
                     VALUES (?, ?)
                     """;
             PreparedStatement preparedStatement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setInt(1,carts.getUser_id());
-            preparedStatement.setBoolean(2,carts.getIs_active());
+            preparedStatement.setInt(1,carts.getUserId());
+            preparedStatement.setBoolean(2,carts.getIsActive());
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
                 System.out.println("Cart created successfully");
@@ -52,8 +52,8 @@ public class CartRepository implements Repository<Carts,Integer> {
             if (rs.next()) {
                 return Carts.builder()
                         .id(rs.getInt("id"))
-                        .user_id(rs.getInt("user_id"))
-                        .is_active(rs.getBoolean("is_active"))
+                        .userId(rs.getInt("user_id"))
+                        .isActive(rs.getBoolean("is_active"))
                         .build();
             }
         } catch (SQLException e) {

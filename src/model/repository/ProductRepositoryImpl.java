@@ -30,9 +30,9 @@ public class ProductRepositoryImpl implements Repository<Product, Integer> {
                 product.setId(rs.getInt("id"));
                 product.setQty(rs.getInt("qty"));
                 product.setPrice(rs.getDouble("price"));
-                product.setIs_deleted(rs.getBoolean("is_deleted"));
-                product.setP_uuid(rs.getString("p_uuid"));
-                product.setP_name(rs.getString("p_name"));
+                product.setIsDeleted(rs.getBoolean("is_deleted"));
+                product.setPUuid(rs.getString("p_uuid"));
+                product.setPName(rs.getString("p_name"));
                 product.setCategory(rs.getString("category"));
                 productList.add(product);
             }
@@ -77,12 +77,12 @@ public class ProductRepositoryImpl implements Repository<Product, Integer> {
                 while (rs.next()) {
                     Product product = new Product();
                     product.setId(rs.getInt("id"));
-                    product.setP_uuid(rs.getString("p_uuid"));
-                    product.setP_name(rs.getString("p_name"));
+                    product.setPUuid(rs.getString("p_uuid"));
+                    product.setPName(rs.getString("p_name"));
                     product.setPrice(rs.getDouble("price"));
                     product.setQty(rs.getInt("qty"));
                     product.setCategory(rs.getString("category"));
-                    product.setIs_deleted(rs.getBoolean("is_deleted"));
+                    product.setIsDeleted(rs.getBoolean("is_deleted"));
                     products.add(product);
                 }
             }
@@ -105,12 +105,12 @@ public class ProductRepositoryImpl implements Repository<Product, Integer> {
             Product product = new Product();
             while (rs.next()) {
                 product.setId(rs.getInt("id"));
-                product.setP_uuid(rs.getString("p_uuid"));
-                product.setP_name(rs.getString("p_name"));
+                product.setPUuid(rs.getString("p_uuid"));
+                product.setPName(rs.getString("p_name"));
                 product.setPrice(rs.getDouble("price"));
                 product.setQty(rs.getInt("qty"));
                 product.setCategory(rs.getString("category"));
-                product.setIs_deleted(rs.getBoolean("is_deleted"));
+                product.setIsDeleted(rs.getBoolean("is_deleted"));
             }
             return product;
         }catch (SQLException exception){

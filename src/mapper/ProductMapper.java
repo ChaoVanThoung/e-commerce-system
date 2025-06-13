@@ -8,8 +8,8 @@ public class ProductMapper {
 
     public static ProductResponseDto toProductResponseDto(Product product) {
         return ProductResponseDto.builder()
-                .p_uuid(product.getP_uuid())
-                .p_name(product.getP_name())
+                .p_uuid(product.getPUuid())
+                .p_name(product.getPName())
                 .qty(product.getQty())
                 .price(product.getPrice())
                 .category(product.getCategory())

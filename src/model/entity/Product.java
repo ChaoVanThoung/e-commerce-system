@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Product {
     Integer id;
-    String p_name;
+    String pName;
     double price;
     Integer qty;
-    Boolean is_deleted;
-    String p_uuid;
+    Boolean isDeleted;
+    String pUuid;
     String category;
 }
