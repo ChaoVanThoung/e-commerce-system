@@ -6,6 +6,7 @@ import utils.DatabaseConfig;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.List;
 
 public class UserRepositoryImpl implements Repository<User,Integer>{
@@ -14,9 +15,9 @@ public class UserRepositoryImpl implements Repository<User,Integer>{
         try(Connection con = DatabaseConfig.getConnection()){
             String sql = """
                     INSERT INTO users(user_name,email,password,is_deleted,u_uuid)
-                    VALUES(?,?,?,?,?,?)
+                    VALUES(?,?,?,?,?)
                     """;
-            PreparedStatement pre = con.prepareStatement(sql);
+            PreparedStatement pre = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             pre.setString(1, user.getUser_name());
             pre.setString(2, user.getEmail());
             pre.setString(3, user.getPassword());
@@ -25,6 +26,10 @@ public class UserRepositoryImpl implements Repository<User,Integer>{
             int rowAffected = pre.executeUpdate();
             if(rowAffected > 0){
                 System.out.println("User has been saved successfully");
+                var rs = pre.getGeneratedKeys();
+                if (rs.next()) {
+                    int id = rs.getInt(1);
+                }
                 return user;
             }
         }catch (Exception e){

@@ -1,6 +1,7 @@
 package mapper;
 
 import model.dto.user.UserRequestDto;
+import model.dto.user.UserResponseDto;
 import model.entity.User;
 
 import java.util.Random;
@@ -18,6 +19,13 @@ public class UserMapper {
                 .build();
     }
 
+    public static UserResponseDto UserResponseDto(User user) {
+        return UserResponseDto.builder()
+                .id(user.getId())
+                .user_name(user.getUser_name())
+                .email(user.getEmail())
+                .build();
+    }
 
 
 }

@@ -1,9 +1,17 @@
 package views;
 
+import controller.CartController;
 import controller.ProductController;
 import controller.UserController;
+import model.dto.cart.CartItemRequestDto;
 import model.dto.product.ProductResponseDto;
 import model.dto.user.UserRequestDto;
+import model.dto.user.UserResponseDto;
+import model.entity.CartItems;
+import model.entity.Carts;
+import model.entity.Product;
+import model.entity.User;
+import model.repository.CartRepository;
 import org.w3c.dom.ls.LSOutput;
 
 import java.io.BufferedReader;
@@ -18,6 +26,8 @@ import java.util.Scanner;
 public class UI {
     private static final UserController userController = new UserController();
     private static final ProductController productController = new ProductController();
+    private static final CartController cartController = new CartController();
+    private static final CartRepository  cartRepository = new CartRepository();
 
     private static void thumbnail(){
         System.out.println("""
@@ -93,6 +103,15 @@ public class UI {
                         String email = (new Scanner(System.in)).nextLine();
                         System.out.print("[+] Insert Password: ");
                         String password = (new Scanner(System.in)).nextLine();
+                        User createNew = userController.createNewUser(
+                                UserRequestDto.builder()
+                                        .user_name(username)
+                                        .email(email)
+                                        .password(password)
+                                        .build()
+                        );
+
+//                        System.out.println("User Created with id " + createNew.getId());
                         System.out.println(userController.createNewUser(
                                 UserRequestDto.builder()
                                         .user_name(username)
@@ -100,6 +119,10 @@ public class UI {
                                         .password(password)
                                         .build()
                         ));
+
+                        // After user creation, create cart
+
+
                     }
                     case 3 -> {
                         System.exit(0);
@@ -163,13 +186,60 @@ public class UI {
                         case 1 -> {
                             System.out.println("Search By Name");
                             System.out.print("[+] Insert Name Product: ");
-                            String name = (new Scanner(System.in)).nextLine();
-                            productController.findProductByName(name).forEach(System.out::println);
+                            String name = new  Scanner(System.in).nextLine();
+
+                            // Capture results from controller
+                            List<ProductResponseDto> productsByName = productController.findProductByName(name);
+
+                            // Display results in table
+                            new TableUI<ProductResponseDto>().getTableDisplay(productsByName);
+                        }
+                        case 2 -> {
+                            System.out.println("""
+                                    ==========================
+                                        Search By Category
+                                    ==========================
+                                    """);
+                            System.out.print("[+] Insert Category: ");
+                            String category = new  Scanner(System.in).nextLine();
+
+                            // Capture results from controller
+                            List<ProductResponseDto> productsByCategory = productController.findProductByCategory(category);
+
+                            // Display results in table
+                            new TableUI<ProductResponseDto>().getTableDisplay(productsByCategory);
                         }
                     }
                 }
                 case 3 -> {
-                    System.out.println("Add Product To Cart");
+                    System.out.println("""
+                            =======================
+                              Add Product To Cart
+                            =======================
+                            """);
+                    System.out.print("[+] Insert Product UUID: ");
+                    String uuid = (new Scanner(System.in)).nextLine();
+                    System.out.print("[+] Insert User ID: ");
+                    int userId = (new Scanner(System.in)).nextInt();
+                    System.out.print("[+] Insert QTY: ");
+                    int qty = (new Scanner(System.in)).nextInt();
+                    // Build request DTO
+                    CartItemRequestDto cartItemRequestDto = CartItemRequestDto.builder()
+                            .user_id(userId)
+                            .quantity(qty)
+                            .build();
+
+                    // Call Controller to add product to cart
+                    CartItems result = cartController.addProductToCartByUuid(userId, uuid, cartItemRequestDto);
+
+                    if (result != null) {
+                        System.out.println("✅ Product added successfully to cart!");
+                    } else {
+                        System.out.println("❌ Failed to add product to cart.");
+                    }
+
+                    new Scanner(System.in).nextLine();
+
                 }
                 case 4 -> {
                     System.out.println("Order Product");

@@ -1,5 +1,6 @@
 package model.repository;
 
+import model.dto.product.ProductResponseDto;
 import model.entity.Product;
 import utils.DatabaseConfig;
 
@@ -90,5 +91,31 @@ public class ProductRepositoryImpl implements Repository<Product, Integer> {
             throw new RuntimeException("Failed to query products", exception);
         }
         return products;
+    }
+
+    public Product findProductByUuid(String uuid) {
+        String sql = """
+                SELECT * FROM products
+                WHERE p_uuid = ?
+        """;
+        try(Connection con = DatabaseConfig.getConnection()){
+            PreparedStatement pre = con.prepareStatement(sql);
+            pre.setString(1, uuid);
+            ResultSet rs = pre.executeQuery();
+            Product product = new Product();
+            while (rs.next()) {
+                product.setId(rs.getInt("id"));
+                product.setP_uuid(rs.getString("p_uuid"));
+                product.setP_name(rs.getString("p_name"));
+                product.setPrice(rs.getDouble("price"));
+                product.setQty(rs.getInt("qty"));
+                product.setCategory(rs.getString("category"));
+                product.setIs_deleted(rs.getBoolean("is_deleted"));
+            }
+            return product;
+        }catch (SQLException exception){
+            System.err.println("[!] ERROR during querying product from database: " + exception.getMessage());
+        }
+        return null;
     }
 }
