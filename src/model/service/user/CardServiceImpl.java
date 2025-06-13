@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import mapper.CartItemMapper;
 import mapper.CartMapper;
 import model.dto.cart.CartItemRequestDto;
+import model.dto.cart.CartItemResponse;
 import model.dto.cart.CartsRequestDto;
 import model.dto.cart.CartsResponseDto;
 import model.entity.CartItems;
@@ -53,5 +54,30 @@ public class CardServiceImpl implements CardService {
         }
 
         return saveCartItem;
+    }
+
+    @Override
+    public List<CartItemResponse> findAll() {
+        List<CartItemResponse> cartItemResponseList = new ArrayList<>();
+        cartRepository.findAll().forEach(cart -> {
+            if (cart.getItems() != null) {
+                cart.getItems().forEach(cartItem -> {
+                    Product product = productRepository.findById(cartItem.getProductId());
+                    if (product != null) {
+                        CartItemResponse response = new CartItemResponse(
+                                cartItem.getId(),
+                                cartItem.getProductId(),
+                                product.getPName(),
+                                cartItem.getQuantity(),
+                                product.getQty(),
+                                product.getPrice(),
+                                cartItem.getQuantity() * product.getPrice()
+                        );
+                        cartItemResponseList.add(response);
+                    }
+                });
+            }
+        });
+        return cartItemResponseList;
     }
 }

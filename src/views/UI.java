@@ -4,6 +4,7 @@ import controller.CartController;
 import controller.ProductController;
 import controller.UserController;
 import model.dto.cart.CartItemRequestDto;
+import model.dto.cart.CartItemResponse;
 import model.dto.product.ProductResponseDto;
 import model.dto.user.UserRequestDto;
 import model.dto.user.UserResponseDto;
@@ -110,19 +111,11 @@ public class UI {
                                         .password(password)
                                         .build()
                         );
-
-//                        System.out.println("User Created with id " + createNew.getId());
-                        System.out.println(userController.createNewUser(
-                                UserRequestDto.builder()
-                                        .user_name(username)
-                                        .email(email)
-                                        .password(password)
-                                        .build()
-                        ));
-
-                        // After user creation, create cart
-
-
+                        if (createNew != null) {
+                            System.out.println("User created successfully with ID: " + createNew.getId());
+                        } else {
+                            System.out.println("Failed to create user.");
+                        }
                     }
                     case 3 -> {
                         System.exit(0);
@@ -145,8 +138,9 @@ public class UI {
                 1. View All Product
                 2. Search By Name
                 3. Add Product To Cart
-                4. Order Product
-                5. Logout
+                4. View all Product in cart
+                5. Order Product
+                6. Logout
                 """);
     }
     public static void home(){
@@ -241,10 +235,46 @@ public class UI {
                     new Scanner(System.in).nextLine();
 
                 }
-                case 4 -> {
-                    System.out.println("Order Product");
+                case 4-> {
+                    System.out.println("""
+                            ===========================
+                              View All POrder Product
+                            ===========================
+                            """);
+                    List<CartItemResponse> cartItemRequestDtoList = cartController.findALl();
+                    if (cartItemRequestDtoList.isEmpty()) {
+                        System.out.println("No items in cart.");
+                    } else {
+                        // Print table header
+                        System.out.printf("%-5s %-12s %-25s %-8s  %-10s %-12s%n",
+                                "ID", "Product ID", "Product Name", "Qty", "Price", "Subtotal");
+                        System.out.println("=".repeat(80));
+
+                        double totalAmount = 0.0;
+
+                        // Print each cart item
+                        for (CartItemResponse item : cartItemRequestDtoList) {
+                            System.out.printf("%-5d %-12d %-25s %-8d  $%-9.2f $%-11.2f%n",
+                                    item.id(),
+                                    item.product_id(),
+                                    item.product_name().length() > 25 ?
+                                            item.product_name().substring(0, 22) + "..." : item.product_name(),
+                                    item.quantity(),
+                                    item.price(),
+                                    item.subtotal());
+
+                            totalAmount += item.subtotal();
+                        }
+
+                        System.out.println("=".repeat(80));
+                        System.out.printf("%-57s Total: $%.2f%n", "", totalAmount);
+                        System.out.println("=".repeat(80));
+                    }
                 }
                 case 5 -> {
+                    System.out.println("Order Product");
+                }
+                case 6 -> {
                     File file = new File("src/session.txt");
                     if (file.exists()) file.delete();
                     isLoggedIn = false;

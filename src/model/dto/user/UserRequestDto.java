@@ -1,6 +1,7 @@
 package model.dto.user;
 
 import lombok.Builder;
+import lombok.Data;
 
 @Builder
 public record UserRequestDto(

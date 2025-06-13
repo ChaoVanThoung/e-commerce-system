@@ -118,4 +118,32 @@ public class ProductRepositoryImpl implements Repository<Product, Integer> {
         }
         return null;
     }
+
+    public Product findById(Integer productId) {
+        try (Connection con = DatabaseConfig.getConnection()) {
+            String sql = """
+                SELECT * FROM products 
+                WHERE id = ? AND is_deleted = false
+                """;
+            PreparedStatement pre = con.prepareStatement(sql);
+            pre.setInt(1, productId);
+            ResultSet resultSet = pre.executeQuery();
+
+            if (resultSet.next()) {
+                Product product = new Product();
+                product.setId(resultSet.getInt("id"));
+                product.setPName(resultSet.getString("p_name"));
+                product.setPrice(resultSet.getDouble("price"));
+                product.setQty(resultSet.getInt("qty"));
+                product.setIsDeleted(resultSet.getBoolean("is_deleted"));
+                product.setPUuid(resultSet.getString("p_uuid"));
+                product.setCategory(resultSet.getString("category"));
+                return product;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error in findById Product: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

@@ -19,16 +19,17 @@ public class UserRepositoryImpl implements Repository<User,Integer>{
                     """;
             PreparedStatement pre = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             pre.setString(1, user.getUsername());
-            pre.setString(2, user.getEmail());
+            pre.setString(2, user.getEmail().trim().toLowerCase());
             pre.setString(3, user.getPassword());
             pre.setBoolean(4, user.getIsDeleted());
             pre.setString(5, user.getUserUuid());
             int rowAffected = pre.executeUpdate();
             if(rowAffected > 0){
                 System.out.println("User has been saved successfully");
-                var rs = pre.getGeneratedKeys();
+                ResultSet rs = pre.getGeneratedKeys();
                 if (rs.next()) {
-                    int id = rs.getInt(1);
+                   user.setId(rs.getInt(1));
+                    System.out.println("User Created with id " + user.getId());
                 }
                 return user;
             }
@@ -55,17 +56,20 @@ public class UserRepositoryImpl implements Repository<User,Integer>{
                     WHERE email = ?;
             """;
             PreparedStatement pre = con.prepareStatement(sql);
-            pre.setString(1, email);
+            pre.setString(1, email.trim().toLowerCase());
             ResultSet resultSet = pre.executeQuery();
-            User user = new User();
+
             if(resultSet.next()){
+                User user = new User();
+                user.setId(resultSet.getInt("id"));
                 user.setUsername(resultSet.getString("user_name"));
                 user.setEmail(resultSet.getString("email"));
                 user.setPassword(resultSet.getString("password"));
                 user.setIsDeleted(resultSet.getBoolean("is_deleted"));
                 user.setUserUuid(resultSet.getString("u_uuid"));
+                return user;
             }
-            return user;
+
         }catch (Exception e){
             System.err.println("Error Database Connection" + e.getMessage());
         }
