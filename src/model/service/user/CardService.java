@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface CardService {
     CartItems addProductToCartByUuid(Integer userId, String uuid, CartItemRequestDto cartItemRequestDto);
-    List<CartItemResponse>  findAll();
+    List<CartItemResponse>  getAllByUserId(Integer userId);
 
 
 }

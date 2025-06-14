@@ -57,9 +57,10 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public List<CartItemResponse> findAll() {
+    public List<CartItemResponse> getAllByUserId(Integer userId) {
         List<CartItemResponse> cartItemResponseList = new ArrayList<>();
-        cartRepository.findAll().forEach(cart -> {
+        List<Carts> userCart = cartRepository.getAllByUserId(userId);
+        userCart.forEach(cart -> {
             if (cart.getItems() != null) {
                 cart.getItems().forEach(cartItem -> {
                     Product product = productRepository.findById(cartItem.getProductId());

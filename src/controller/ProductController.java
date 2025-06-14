@@ -19,4 +19,8 @@ public class ProductController {
     public List<ProductResponseDto> findProductByCategory(String category) {
         return productService.findProductByCategory(category);
     }
+
+    public void saveTenMillionRecords() throws InterruptedException {
+        productService.saveTenMillionProducts();
+    }
 }

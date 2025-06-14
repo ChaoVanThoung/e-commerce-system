@@ -2,12 +2,21 @@ package model.repository;
 
 import model.dto.product.ProductResponseDto;
 import model.entity.Product;
+import org.postgresql.copy.CopyManager;
+import org.postgresql.core.BaseConnection;
 import utils.DatabaseConfig;
 
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 public class ProductRepositoryImpl implements Repository<Product, Integer> {
     @Override
@@ -145,5 +154,25 @@ public class ProductRepositoryImpl implements Repository<Product, Integer> {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void writeCSV(int start, int end, int threadId, String filePath) throws IOException {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(filePath))) {
+            for (int i = start; i <= end; i++) {
+                String uuid = UUID.randomUUID().toString();
+                String name = "P_" + i;
+                double price = (i % 1000) + 0.99;
+                int qty = i % 500;
+                String category = "C_" + (i % 10);
+                writer.write(String.format("%s,%.2f,%d,false,%s,%s\n", name, price, qty, uuid, category));
+            }
+        }
+    }
+
+    public void copyCSVToPostgres(String filePath, Connection conn) throws Exception {
+        CopyManager copyManager = new CopyManager((BaseConnection) conn);
+        try (Reader reader = new FileReader(filePath)) {
+            copyManager.copyIn("COPY products (p_name, price, qty, is_deleted, p_uuid, category) FROM STDIN WITH (FORMAT csv)", reader);
+        }
     }
 }

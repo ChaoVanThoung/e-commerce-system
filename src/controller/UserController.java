@@ -14,4 +14,8 @@ public class UserController {
     public boolean loginUser(String email, String password) {
          return userService.loginUser(email,password);
     }
+
+    public Integer getUserIdFromSession() {
+        return userService.getUserIdFromSession();
+    }
 }

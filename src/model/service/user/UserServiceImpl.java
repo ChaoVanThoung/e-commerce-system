@@ -7,6 +7,8 @@ import model.entity.User;
 import model.repository.CartRepository;
 import model.repository.UserRepositoryImpl;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -48,12 +50,26 @@ public class UserServiceImpl implements UserService {
         }
         System.out.println("login successful");
 
-        try(FileWriter writer = new FileWriter("src/session.txt")){
-            writer.write(user.getEmail());
-        }catch (IOException e){
-            System.out.println("Failed to save session.txt" + e.getMessage());
+        try (FileWriter writer = new FileWriter("src/session.txt")) {
+            writer.write(user.getId() + "," + user.getEmail());
+        } catch (IOException e) {
+            System.out.println("Failed to save session.txt: " + e.getMessage());
         }
         return true;
+    }
+
+    @Override
+    public Integer getUserIdFromSession() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/session.txt"))) {
+            String line = reader.readLine();
+            if (line != null) {
+                String[] parts = line.split(",");
+                return Integer.parseInt(parts[0]);
+            }
+        } catch (IOException e) {
+            System.out.println("Failed to read session.txt: " + e.getMessage());
+        }
+        return null;
     }
 
 }

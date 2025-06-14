@@ -22,7 +22,7 @@ public class CartController {
         return cardService.addProductToCartByUuid(userId,uuid, cartItemRequestDto);
     }
 
-    public List<CartItemResponse> findALl(){
-        return cardService.findAll();
+    public List<CartItemResponse> getAllByUserId(Integer userId) {
+        return cardService.getAllByUserId(userId);
     }
 }

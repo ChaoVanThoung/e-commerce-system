@@ -8,4 +8,6 @@ public interface ProductService {
     List<ProductResponseDto> findAll();
     List<ProductResponseDto> findProductByName(String name);
     List<ProductResponseDto> findProductByCategory(String category);
+
+    void saveTenMillionProducts() throws InterruptedException;
 }

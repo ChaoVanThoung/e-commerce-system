@@ -39,16 +39,48 @@ public class CartRepository implements Repository<Carts, Integer> {
 
     @Override
     public List<Carts> findAll() {
+      return List.of();
+    }
+
+    @Override
+    public Integer delete(Integer id) {
+        return 0;
+    }
+
+    public Carts findActiveCartByUserId(Integer userId) {
+        try (Connection con = DatabaseConfig.getConnection()) {
+            String sql = "SELECT * FROM carts WHERE user_id = ? AND is_active = true";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return Carts.builder()
+                        .id(rs.getInt("id"))
+                        .userId(rs.getInt("user_id"))
+                        .isActive(rs.getBoolean("is_active"))
+                        .build();
+            }
+        } catch (SQLException e) {
+            System.out.println("Error finding active cart: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public List<Carts> getAllByUserId(Integer userId) {
         List<Carts> cartsList = new ArrayList<>();
         try (Connection con = DatabaseConfig.getConnection()) {
             String sql = """
-                SELECT c.id, c.user_id, c.is_active,
-                       ci.id as item_id, ci.product_id, ci.quantity
-                FROM carts c
-                LEFT JOIN cart_items ci ON c.id = ci.cart_id
-                ORDER BY c.id
-                """;
+            SELECT c.id, c.user_id, c.is_active,
+                   ci.id as item_id, ci.product_id, ci.quantity
+            FROM carts c
+            LEFT JOIN cart_items ci ON c.id = ci.cart_id
+            WHERE c.user_id = ?
+            ORDER BY c.id
+            """;
             PreparedStatement pre = con.prepareStatement(sql);
+            pre.setInt(1, userId);  // Set userId parameter
+
             ResultSet rs = pre.executeQuery();
 
             Map<Integer, Carts> cartsMap = new HashMap<>();
@@ -86,28 +118,5 @@ public class CartRepository implements Repository<Carts, Integer> {
         return cartsList;
     }
 
-    @Override
-    public Integer delete(Integer id) {
-        return 0;
-    }
 
-    public Carts findActiveCartByUserId(Integer userId) {
-        try (Connection con = DatabaseConfig.getConnection()) {
-            String sql = "SELECT * FROM carts WHERE user_id = ? AND is_active = true";
-            PreparedStatement ps = con.prepareStatement(sql);
-            ps.setInt(1, userId);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return Carts.builder()
-                        .id(rs.getInt("id"))
-                        .userId(rs.getInt("user_id"))
-                        .isActive(rs.getBoolean("is_active"))
-                        .build();
-            }
-        } catch (SQLException e) {
-            System.out.println("Error finding active cart: " + e.getMessage());
-        }
-        return null;
-    }
 }

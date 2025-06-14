@@ -59,7 +59,7 @@ public class UI {
         }
     }
 
-    public static void auth(){
+    public static void auth() throws InterruptedException {
         checkExistingSession();
         int option = 0;
         if (isLoggedIn == false){
@@ -138,12 +138,12 @@ public class UI {
                 1. View All Product
                 2. Search By Name
                 3. Add Product To Cart
-                4. View all Product in cart
-                5. Order Product
+                4. Order Product
+                5. Insert 10 Million products
                 6. Logout
                 """);
     }
-    public static void home(){
+    public static void home() throws InterruptedException {
 
         int option = 0;
         while(true){
@@ -213,10 +213,12 @@ public class UI {
                             """);
                     System.out.print("[+] Insert Product UUID: ");
                     String uuid = (new Scanner(System.in)).nextLine();
-                    System.out.print("[+] Insert User ID: ");
-                    int userId = (new Scanner(System.in)).nextInt();
+
                     System.out.print("[+] Insert QTY: ");
                     int qty = (new Scanner(System.in)).nextInt();
+
+                    Integer userId = userController.getUserIdFromSession();
+
                     // Build request DTO
                     CartItemRequestDto cartItemRequestDto = CartItemRequestDto.builder()
                             .user_id(userId)
@@ -237,11 +239,12 @@ public class UI {
                 }
                 case 4-> {
                     System.out.println("""
-                            ===========================
-                              View All POrder Product
-                            ===========================
+                            ====================
+                               Order Product
+                            ====================
                             """);
-                    List<CartItemResponse> cartItemRequestDtoList = cartController.findALl();
+                    Integer userId = userController.getUserIdFromSession();
+                    List<CartItemResponse> cartItemRequestDtoList = cartController.getAllByUserId(userId);
                     if (cartItemRequestDtoList.isEmpty()) {
                         System.out.println("No items in cart.");
                     } else {
@@ -272,7 +275,12 @@ public class UI {
                     }
                 }
                 case 5 -> {
-                    System.out.println("Order Product");
+                    System.out.println("""
+                            ============================
+                             Insert 10 Million Products
+                            ============================
+                            """);
+                    productController.saveTenMillionRecords();
                 }
                 case 6 -> {
                     File file = new File("src/session.txt");
